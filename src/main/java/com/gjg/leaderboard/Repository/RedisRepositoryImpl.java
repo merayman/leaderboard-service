@@ -83,7 +83,7 @@ public class RedisRepositoryImpl implements RedisRepository{
         String userId = id.toString();
             BaseUser baseUser = hashOperations.get(USERS_KEY,userId);
             if (baseUser == null) {
-                throw new RuntimeException("There is no baseUser with baseUser id:" + userId);
+                throw new RuntimeException("There is no user with user id:" + userId);
             }
             return baseUser;
         }
