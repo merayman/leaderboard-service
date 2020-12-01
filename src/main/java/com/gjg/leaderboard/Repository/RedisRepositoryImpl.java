@@ -44,9 +44,9 @@ public class RedisRepositoryImpl implements RedisRepository{
         if(retVal)
             return baseUser;
         else
-            throw new RuntimeException("Redis can't add baseUser whose baseUser id:" + baseUser.getId());
+            throw new RuntimeException("Redis can't add user whose user id:" + baseUser.getId());
     }
-    
+
     @Override
     public List<User> getLeaderboard(long from, long size) {
         List<User> leaderboard = new ArrayList();
