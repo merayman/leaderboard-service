@@ -1,19 +1,17 @@
-package com.gjg.leaderboard.Controller;
+package com.gjg.leaderboard.controller;
 
-import com.gjg.leaderboard.DTO.LeaderboardDTO;
-import com.gjg.leaderboard.DTO.ScoreDTO;
-import com.gjg.leaderboard.DTO.UserDTO;
-import com.gjg.leaderboard.Model.BaseUser;
-import com.gjg.leaderboard.Service.LeaderboardService;
+import com.gjg.leaderboard.dto.*;
+import com.gjg.leaderboard.model.BaseUser;
+import com.gjg.leaderboard.service.LeaderboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.DocFlavor;
-import java.util.UUID;
+import java.util.HashMap;
+import java.util.List;
+
 
 @Controller
 @RequestMapping("/")
@@ -48,7 +46,7 @@ public class WebController {
     @RequestMapping(value = "/user/profile", method = RequestMethod.GET)
     public ResponseEntity<UserDTO> userProfile(
             @RequestParam(value = "id")
-            UUID userId){
+            String userId){
         return new ResponseEntity<>(leaderboardService.getUser(userId),HttpStatus.OK);
     }
 
@@ -60,4 +58,28 @@ public class WebController {
                 .createUser(userDTO.getName(),userDTO.getCountryCode())
                 ,HttpStatus.OK);
     }
+/*
+    @RequestMapping(value = "/user/createBulk", method = RequestMethod.POST)
+    public ResponseEntity<BulkResponseDTO> createUserBulk(
+            @RequestBody
+                    List<UserDTO> userDTOList){
+
+        return new ResponseEntity<>(new BulkResponseDTO(leaderboardService
+                .createBulkUser(new HashMap<String, String>(
+                        userDTOList.forEach(userDTO -> );)).size())
+                ,HttpStatus.OK);
+    }
+*/
+    /*
+
+    @RequestMapping(value = "/score/submitBulk", method = RequestMethod.POST)
+    public ResponseEntity<BulkResponseDTO> submitScore(
+            @RequestBody
+                    List<ScoreDTO> scoreDTOList) {
+        return new ResponseEntity<>(leaderboardService
+                .submitBulkScore(scoreDTOList), HttpStatus.OK);
+    }
+      */
+
+
 }

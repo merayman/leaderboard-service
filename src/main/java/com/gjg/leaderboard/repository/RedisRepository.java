@@ -1,14 +1,12 @@
-package com.gjg.leaderboard.Repository;
+package com.gjg.leaderboard.repository;
 
-import com.gjg.leaderboard.Model.BaseUser;
-import com.gjg.leaderboard.Model.User;
-
+import com.gjg.leaderboard.model.BaseUser;
+import com.gjg.leaderboard.model.User;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 
 public interface RedisRepository {
-
 
     //gets global leaderboard
     List<User> getLeaderboard(long from, long size);
@@ -20,7 +18,7 @@ public interface RedisRepository {
     BaseUser addUser(BaseUser baseUser);
 
     //gets the user by id
-    BaseUser getUser(UUID id);
+    BaseUser getUser(String id);
 
     //submits a score and returns the respective baseUser
     Double submitScore(BaseUser baseUser, double scoreWorth);
@@ -37,6 +35,10 @@ public interface RedisRepository {
     //returns global rank by baseUser
     Long getCountryRank(BaseUser baseUser);
 
-    //
+    //returns total points of a user
     Double getPoints(BaseUser baseUser);
+
+    //creates multiple users
+    public List<BaseUser> addBulkUser(List<BaseUser> baseUserList);
+
 }

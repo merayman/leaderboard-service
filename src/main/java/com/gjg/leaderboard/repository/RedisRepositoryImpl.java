@@ -1,12 +1,14 @@
-package com.gjg.leaderboard.Repository;
+package com.gjg.leaderboard.repository;
 
-import com.gjg.leaderboard.Model.BaseUser;
-import com.gjg.leaderboard.Model.User;
+import com.gjg.leaderboard.model.BaseUser;
+import com.gjg.leaderboard.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Repository;
+import reactor.util.annotation.NonNull;
+import reactor.util.annotation.Nullable;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
@@ -20,7 +22,6 @@ public class RedisRepositoryImpl implements RedisRepository{
     private RedisTemplate<String, BaseUser> redisTemplate;
     private ZSetOperations<String, BaseUser> sortedSetOperations;
     private HashOperations<String, String, BaseUser> hashOperations;
-
 
     @Autowired
     public RedisRepositoryImpl(RedisTemplate<String, BaseUser> redisTemplate){
@@ -50,19 +51,11 @@ public class RedisRepositoryImpl implements RedisRepository{
     @Override
     public List<User> getLeaderboard(long from, long size) {
         List<User> leaderboard = new ArrayList();
-        /*
-        for (long i = from; i < from+size; i++) {
-            long globalRank;
-            long countryRank;
-            long points;
-            sortedSetOperations.
-            sortedSetOperations.rank(LB_KEY,)
-        }*/
         sortedSetOperations.rangeWithScores(LB_KEY, from, from+size)
                 .forEach(u -> leaderboard.
                         add(new User(u.getValue(),u.getScore(),
-                                sortedSetOperations.rank(LB_KEY,u.getValue()),
-                                sortedSetOperations.rank(LB_KEY+"-"+u.getValue().getCountryCode(),u.getValue()))));
+                                sortedSetOperations.reverseRank(LB_KEY,u.getValue()) + 1,
+                                sortedSetOperations.reverseRank(LB_KEY+"-"+u.getValue().getCountryCode(),u.getValue())+1)));
         return leaderboard;
     }
 
@@ -73,17 +66,16 @@ public class RedisRepositoryImpl implements RedisRepository{
         sortedSetOperations.rangeWithScores(LB_KEY+"-"+countryCode, from, from+size)
                 .forEach(u -> leaderboard.
                         add(new User(u.getValue(),u.getScore(),
-                                sortedSetOperations.rank(LB_KEY,u.getValue()),
-                                sortedSetOperations.rank(LB_KEY+"-"+u.getValue().getCountryCode(),u.getValue()))));
+                                sortedSetOperations.reverseRank(LB_KEY,u.getValue()) + 1,
+                                sortedSetOperations.reverseRank(LB_KEY+"-"+u.getValue().getCountryCode(),u.getValue())+1)));
         return leaderboard;
     }
 
     @Override
-    public BaseUser getUser(UUID id) {
-        String userId = id.toString();
-            BaseUser baseUser = hashOperations.get(USERS_KEY,userId);
+    public BaseUser getUser(String id) {
+            BaseUser baseUser = hashOperations.get(USERS_KEY,id);
             if (baseUser == null) {
-                throw new RuntimeException("There is no user with user id:" + userId);
+                throw new RuntimeException("There is no user with user id:" + id);
             }
             return baseUser;
         }
@@ -109,7 +101,7 @@ public class RedisRepositoryImpl implements RedisRepository{
     @Override
     public Long getCountryRank(BaseUser baseUser) {
         String countryCode = baseUser.getCountryCode();
-        return sortedSetOperations.rank(LB_KEY+"-"+countryCode, baseUser);
+        return sortedSetOperations.reverseRank(LB_KEY+"-"+countryCode, baseUser) + 1;
     }
 
     @Override
@@ -119,7 +111,30 @@ public class RedisRepositoryImpl implements RedisRepository{
 
     @Override
     public Long getGlobalRank(BaseUser baseUser){
-        return sortedSetOperations.rank(LB_KEY, baseUser);
+        return sortedSetOperations.reverseRank(LB_KEY, baseUser) + 1;
     }
+
+    @Override
+    public List<BaseUser> addBulkUser(List<BaseUser> baseUserList) {
+        return null;
+    }
+        /*    double initPoint = 0;
+        Map<String, BaseUser> baseUserMap = new HashMap();
+
+        Set<ZSetOperations.TypedTuple<BaseUser>> sets = new HashSet(baseUserMap.values());
+        for (ZSetOperations.TypedTuple<BaseUser> s: sets
+             ) {
+            s.getScore();
+        }
+        for (BaseUser baseUser : baseUserList
+             ) {
+            baseUserMap.put(baseUser.getId(),baseUser);
+        }
+        hashOperations.putAll(USERS_KEY,baseUserMap);
+        sortedSetOperations.add(LB_KEY,sets);
+        sortedSetOperations.add(LB_KEY,sets);
+        return baseUserList;
+    }
+*/
 
 }

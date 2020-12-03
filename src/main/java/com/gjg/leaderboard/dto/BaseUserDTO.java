@@ -1,29 +1,13 @@
-package com.gjg.leaderboard.Model;
+package com.gjg.leaderboard.dto;
 
-import java.io.Serializable;
-import java.util.UUID;
+public class BaseUserDTO {
 
-
-public class BaseUser implements Serializable {
-
-    private UUID id;
     private String name;
     private String countryCode;
 
-
-    public BaseUser(UUID id, String name, String countryCode){
-        this.id = id;
+    public BaseUserDTO(String name, String countryCode) {
         this.name = name;
         this.countryCode = countryCode;
-    }
-
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public String getName() {

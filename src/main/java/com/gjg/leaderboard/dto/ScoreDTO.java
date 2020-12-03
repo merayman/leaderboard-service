@@ -1,13 +1,13 @@
-package com.gjg.leaderboard.DTO;
+package com.gjg.leaderboard.dto;
 
 import java.util.UUID;
 
 public class ScoreDTO {
     private double scoreWorth;
-    private UUID userId;
+    private String userId;
     private long timestamp;
 
-    public ScoreDTO(double scoreWorth, UUID userId, long timestamp) {
+    public ScoreDTO(double scoreWorth, String userId, long timestamp) {
         this.scoreWorth = scoreWorth;
         this.userId = userId;
         this.timestamp = timestamp;
@@ -21,11 +21,11 @@ public class ScoreDTO {
         this.scoreWorth = scoreWorth;
     }
 
-    public UUID getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

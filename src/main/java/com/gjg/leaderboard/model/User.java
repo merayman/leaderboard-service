@@ -1,6 +1,4 @@
-package com.gjg.leaderboard.Model;
-
-import java.util.UUID;
+package com.gjg.leaderboard.model;
 
 public class User extends BaseUser {
     private Double points;

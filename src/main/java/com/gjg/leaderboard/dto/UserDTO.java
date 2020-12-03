@@ -1,16 +1,16 @@
-package com.gjg.leaderboard.DTO;
+package com.gjg.leaderboard.dto;
 
 import java.util.UUID;
 
 public class UserDTO {
-    private UUID id;
+    private String id;
     private Double points;
     private Long globalRank;
     private Long countryRank;
     private String name;
     private String countryCode;
 
-    public UserDTO(UUID id, Double points, Long globalRank, Long countryRank, String name, String countryCode) {
+    public UserDTO(String id, Double points, Long globalRank, Long countryRank, String name, String countryCode) {
         this.id = id;
         this.points = points;
         this.globalRank = globalRank;
@@ -19,11 +19,11 @@ public class UserDTO {
         this.countryCode = countryCode;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -1,16 +1,13 @@
-package com.gjg.leaderboard.Service;
+package com.gjg.leaderboard.service;
 
-import com.gjg.leaderboard.DTO.LeaderboardDTO;
-import com.gjg.leaderboard.DTO.ScoreDTO;
-import com.gjg.leaderboard.DTO.UserDTO;
-import com.gjg.leaderboard.Model.BaseUser;
-import com.gjg.leaderboard.Repository.RedisRepository;
+import com.gjg.leaderboard.dto.*;
+import com.gjg.leaderboard.model.BaseUser;
+import com.gjg.leaderboard.model.User;
+import com.gjg.leaderboard.repository.RedisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class LeaderboardService {
@@ -35,10 +32,11 @@ public class LeaderboardService {
                                     u.getGlobalRank(),u.getCountryRank(),
                                     u.getName(),u.getCountryCode())));
         }
-            return new LeaderboardDTO(leaderBoard);
+        Collections.reverse(leaderBoard);
+        return new LeaderboardDTO(leaderBoard);
     }
 
-    public UserDTO getUser(UUID userId){
+    public UserDTO getUser(String userId){
         BaseUser baseUser = redisRepository.getUser(userId);
         String userName = baseUser.getName();
         String countryCode = baseUser.getCountryCode();
@@ -50,7 +48,7 @@ public class LeaderboardService {
     }
 
     public UserDTO createUser(String name, String countryCode){
-        UUID id = UUID.randomUUID();
+        String id = UUID.randomUUID().toString();
         BaseUser created = new BaseUser(id,name,countryCode);
         BaseUser baseUser = redisRepository.addUser(created);
         Long globalRank = redisRepository.getGlobalRank(baseUser);
@@ -60,10 +58,26 @@ public class LeaderboardService {
         return userDTO;
     }
 
+    public BulkResponseDTO createBulkUser(ArrayList<BaseUserDTO> baseUserDTOArrayList)
+    { return null;}
+        /*
+        List<BaseUser> baseUsers = new ArrayList();
+        for (String name : nameCountryMap.keySet()
+             ) {
+            String id = UUID.randomUUID().toString();
+            BaseUser created = new BaseUser(id,name,nameCountryMap.get(name));
+            baseUsers.add(created);
+        }
+        List<BaseUser> addedBaseUsers = redisRepository.addBulkUser(baseUsers);
+        return new BulkResponseDTO(addedBaseUsers.size());
+
+    }
+         */
+
     public ScoreDTO submitScore(BaseUser baseUser, double scoreWorth){
         long timestamp = System.currentTimeMillis() / 1000;
         Double updatedScore = redisRepository.submitScore(baseUser,scoreWorth);
-        UUID id = baseUser.getId();
+        String id = baseUser.getId();
         ScoreDTO scoreDTO = new ScoreDTO(scoreWorth,id,timestamp);
         return scoreDTO;
     }

@@ -1,4 +1,4 @@
-package com.gjg.leaderboard.DTO;
+package com.gjg.leaderboard.dto;
 
 
 import java.util.List;
