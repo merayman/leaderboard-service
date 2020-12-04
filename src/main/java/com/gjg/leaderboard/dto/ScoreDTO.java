@@ -1,7 +1,5 @@
 package com.gjg.leaderboard.dto;
 
-import java.util.UUID;
-
 public class ScoreDTO {
     private double scoreWorth;
     private String userId;

@@ -38,7 +38,5 @@ public interface RedisRepository {
     //returns total points of a user
     Double getPoints(BaseUser baseUser);
 
-    //creates multiple users
-    public List<BaseUser> addBulkUser(List<BaseUser> baseUserList);
 
 }

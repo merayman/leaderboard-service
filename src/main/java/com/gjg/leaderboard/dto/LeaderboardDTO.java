@@ -1,6 +1,5 @@
 package com.gjg.leaderboard.dto;
 
-
 import java.util.List;
 
 public class LeaderboardDTO {

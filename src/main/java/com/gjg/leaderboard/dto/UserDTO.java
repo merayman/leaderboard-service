@@ -1,7 +1,5 @@
 package com.gjg.leaderboard.dto;
 
-import java.util.UUID;
-
 public class UserDTO {
     private String id;
     private Double points;

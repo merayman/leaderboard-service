@@ -1,5 +1,11 @@
 package com.gjg.leaderboard.model;
 
+/*
+    Subclass of Baseuser
+    It inherits userid, username and countrycode from BaseUser
+    It has points, global rank and country rank
+ */
+
 public class User extends BaseUser {
     private Double points;
     private Long globalRank;

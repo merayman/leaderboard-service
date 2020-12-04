@@ -34,6 +34,7 @@ public class RedisRepositoryImpl implements RedisRepository{
         hashOperations = redisTemplate.opsForHash();
     }
 
+    //adds a baseUser and returns the added baseUser
     @Override
     public BaseUser addUser(BaseUser baseUser) {
         double initPoint = 0;
@@ -48,6 +49,8 @@ public class RedisRepositoryImpl implements RedisRepository{
             throw new RuntimeException("Redis can't add user whose user id:" + baseUser.getId());
     }
 
+
+    //gets global leaderboard
     @Override
     public List<User> getLeaderboard(long from, long size) {
         List<User> leaderboard = new ArrayList();
@@ -59,7 +62,7 @@ public class RedisRepositoryImpl implements RedisRepository{
         return leaderboard;
     }
 
-
+    //gets country leaderboard by country code
     @Override
     public List<User> getCountryLeaderboard(String countryCode, long from, long size) {
         List<User> leaderboard = new ArrayList();
@@ -71,6 +74,7 @@ public class RedisRepositoryImpl implements RedisRepository{
         return leaderboard;
     }
 
+    //gets the user by id
     @Override
     public BaseUser getUser(String id) {
             BaseUser baseUser = hashOperations.get(USERS_KEY,id);
@@ -81,6 +85,7 @@ public class RedisRepositoryImpl implements RedisRepository{
         }
 
 
+    //submits a score and returns the respective baseUser
     @Override
     public Double submitScore(BaseUser baseUser, double scoreWorth) {
         String countryCode = baseUser.getCountryCode();
@@ -88,53 +93,36 @@ public class RedisRepositoryImpl implements RedisRepository{
         return sortedSetOperations.incrementScore(LB_KEY, baseUser,scoreWorth);
     }
 
+    //returns total number of players globally
     @Override
     public Long getNumOfPlayers() {
         return sortedSetOperations.size(LB_KEY);
     }
 
+    //returns total number of players in that country
     @Override
     public Long getNumOfPlayers(String countryCode) {
         return sortedSetOperations.size(LB_KEY+"-"+countryCode);
     }
 
+    //returns global rank by baseUser
+    @Override
+    public Long getGlobalRank(BaseUser baseUser){
+        return sortedSetOperations.reverseRank(LB_KEY, baseUser) + 1;
+    }
+
+    //returns global rank by baseUser
     @Override
     public Long getCountryRank(BaseUser baseUser) {
         String countryCode = baseUser.getCountryCode();
         return sortedSetOperations.reverseRank(LB_KEY+"-"+countryCode, baseUser) + 1;
     }
 
+    //returns total points of a user
     @Override
     public Double getPoints(BaseUser baseUser) {
         return sortedSetOperations.score(LB_KEY, baseUser);
     }
 
-    @Override
-    public Long getGlobalRank(BaseUser baseUser){
-        return sortedSetOperations.reverseRank(LB_KEY, baseUser) + 1;
-    }
-
-    @Override
-    public List<BaseUser> addBulkUser(List<BaseUser> baseUserList) {
-        return null;
-    }
-        /*    double initPoint = 0;
-        Map<String, BaseUser> baseUserMap = new HashMap();
-
-        Set<ZSetOperations.TypedTuple<BaseUser>> sets = new HashSet(baseUserMap.values());
-        for (ZSetOperations.TypedTuple<BaseUser> s: sets
-             ) {
-            s.getScore();
-        }
-        for (BaseUser baseUser : baseUserList
-             ) {
-            baseUserMap.put(baseUser.getId(),baseUser);
-        }
-        hashOperations.putAll(USERS_KEY,baseUserMap);
-        sortedSetOperations.add(LB_KEY,sets);
-        sortedSetOperations.add(LB_KEY,sets);
-        return baseUserList;
-    }
-*/
 
 }

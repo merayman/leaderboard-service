@@ -2,7 +2,6 @@ package com.gjg.leaderboard.service;
 
 import com.gjg.leaderboard.dto.*;
 import com.gjg.leaderboard.model.BaseUser;
-import com.gjg.leaderboard.model.User;
 import com.gjg.leaderboard.repository.RedisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +15,12 @@ public class LeaderboardService {
     @Autowired
     private RedisRepository redisRepository;
 
+    /*
+        It returns leaderboard as LeaderboardDTO
+        if countrycode is empty string, it returns global leaderboard
+        else it returns countrspecific leaderboard
+        It does pagination from parameter from to from+size
+     */
     public LeaderboardDTO getLeaderboard(String countryCode, long from, long size){
         List<UserDTO> leaderBoard = new ArrayList();
         if (countryCode.equals("")) {
@@ -36,6 +41,9 @@ public class LeaderboardService {
         return new LeaderboardDTO(leaderBoard);
     }
 
+    /*
+    It returns user as UserDTO by userId
+    */
     public UserDTO getUser(String userId){
         BaseUser baseUser = redisRepository.getUser(userId);
         String userName = baseUser.getName();
@@ -47,6 +55,9 @@ public class LeaderboardService {
         return userDTO;
     }
 
+    /*
+    It creates user by username and countrycode, adds into Redis repository and returns created user as UserDTO
+    */
     public UserDTO createUser(String name, String countryCode){
         String id = UUID.randomUUID().toString();
         BaseUser created = new BaseUser(id,name,countryCode);
@@ -58,21 +69,10 @@ public class LeaderboardService {
         return userDTO;
     }
 
-    public BulkResponseDTO createBulkUser(ArrayList<BaseUserDTO> baseUserDTOArrayList)
-    { return null;}
-        /*
-        List<BaseUser> baseUsers = new ArrayList();
-        for (String name : nameCountryMap.keySet()
-             ) {
-            String id = UUID.randomUUID().toString();
-            BaseUser created = new BaseUser(id,name,nameCountryMap.get(name));
-            baseUsers.add(created);
-        }
-        List<BaseUser> addedBaseUsers = redisRepository.addBulkUser(baseUsers);
-        return new BulkResponseDTO(addedBaseUsers.size());
-
-    }
-         */
+    /*
+    It submits the score of given base user worth of given score worth by paramaters
+    It updates the score of the user and leaderboards
+     */
 
     public ScoreDTO submitScore(BaseUser baseUser, double scoreWorth){
         long timestamp = System.currentTimeMillis() / 1000;

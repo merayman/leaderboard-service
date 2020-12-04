@@ -2,6 +2,10 @@ package com.gjg.leaderboard.model;
 
 import java.io.Serializable;
 
+/*
+    Serializable base model of user
+    Base user has user id, user name, and countrycode of user
+ */
 public class BaseUser implements Serializable {
 
     private String id;

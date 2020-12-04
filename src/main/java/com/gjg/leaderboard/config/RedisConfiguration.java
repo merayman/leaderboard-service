@@ -20,21 +20,26 @@ import javax.annotation.PreDestroy;
 @EnableRedisRepositories
 public class RedisConfiguration {
 
+    //host name from properties
     @Value("${spring.redis.host}")
     String hostName;
 
+    //port from properties
     @Value("${spring.redis.port}")
     int port;
 
+    //timeout limit from properties
     @Value("${spring.redis.timeout}")
     int timeout;
 
+    //redis connection configuration
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(hostName, port);
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
 
+    //creates redis store template and configures to be used redis data type
     @Bean
     public RedisTemplate<String, BaseUser> redisTemplate() {
         RedisTemplate<String, BaseUser> template = new RedisTemplate<>();
